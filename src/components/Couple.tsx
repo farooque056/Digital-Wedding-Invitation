@@ -22,7 +22,7 @@ export default function Couple() {
           
           <div className="w-full h-full rounded-t-[156px] rounded-b-[28px] overflow-hidden relative">
             <img
-              src="https://i.ibb.co/sfy0R0q/aa.png"
+              src="https://i.ibb.co/v9CsqMx/v1vv1v.jpg"
               alt="Sinan & Fahmida - Soulmates"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
