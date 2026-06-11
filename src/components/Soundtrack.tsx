@@ -33,7 +33,7 @@ interface SoundtrackProps {
 
 export default function Soundtrack({ autoPlayTrigger }: SoundtrackProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.15);
+  const [volume, setVolume] = useState(0.20);
   const [errorPlaying, setErrorPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const playerRef = useRef<any>(null);
