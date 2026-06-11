@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Sinan  Fahmida Wedding Invitation",
+  "description": "A premium and elegant digital wedding invitation application for Sinan \u0026 Fahmida, featuring an interactive envelope, countdown timer, romantic bg soundtrack, love story timeline, event itineraries, local map markers, and a guests guestbook with RSVP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
