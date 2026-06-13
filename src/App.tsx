@@ -118,7 +118,7 @@ export default function App() {
               {/* Elegant Date specification */}
               <div className="mb-10 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
                 <span className="font-cinzel text-xs sm:text-sm tracking-[0.3em] uppercase text-gold-200 font-light">
-                  Sunday <span className="text-gold-400/60 mx-1.5">•</span> 14th June, 2026
+                  Sunday <span className="text-gold-400/60 mx-1.5">•</span> 14th June, 2026 <span className="text-gold-400/60 mx-1.5">•</span> 09:30 AM
                 </span>
               </div>
 
