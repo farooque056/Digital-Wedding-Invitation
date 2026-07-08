@@ -16,12 +16,14 @@ export default function App() {
 
   // Generate falling rose petals on load
   useEffect(() => {
-    const generatedPetals = Array.from({ length: 18 }).map((_, i) => ({
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const length = isMobile ? 6 : 18;
+    const generatedPetals = Array.from({ length }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 10}s`,
-      duration: `${8 + Math.random() * 12}s`,
-      size: `${8 + Math.random() * 12}px`,
+      delay: `${Math.random() * 8}s`,
+      duration: isMobile ? `${6 + Math.random() * 8}s` : `${8 + Math.random() * 12}s`,
+      size: isMobile ? `${6 + Math.random() * 8}px` : `${8 + Math.random() * 12}px`,
     }));
     setPetals(generatedPetals);
   }, []);
@@ -144,8 +146,8 @@ export default function App() {
 
           {/* 3. Hero Section */}
           <section id="hero" className="min-h-[85vh] flex flex-col justify-center items-center py-20 px-4 relative select-none overflow-hidden">
-            {/* Background Video Layer */}
-            <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-40 mix-blend-lighten">
+            {/* Background Video Layer (Hidden on mobile to maximize phone rendering speed and scroll responsiveness) */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-40 mix-blend-lighten hidden md:block">
               <iframe
                 loading="lazy"
                 title="Gumlet video player"

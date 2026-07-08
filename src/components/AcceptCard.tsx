@@ -270,26 +270,26 @@ export default function AcceptCard() {
               transition={{ type: 'spring', damping: 20, stiffness: 180 }}
               className="w-full bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 backdrop-blur-xl border border-gold-400/40 rounded-3xl p-8 md:p-14 shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative text-center overflow-hidden"
             >
-              {/* Confetti & Particle Effects for Joyful accepts */}
+              {/* Confetti & Particle Effects for Joyful accepts (Reduced array length for perfect performance on mobile) */}
               {status === 'accept' && (
                 <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
-                  {[...Array(15)].map((_, i) => (
+                  {[...Array(6)].map((_, i) => (
                     <motion.div
                       key={`gold-dust-${i}`}
                       initial={{
                         opacity: 0,
-                        x: `${12 + Math.random() * 76}%`,
+                        x: `${15 + Math.random() * 70}%`,
                         y: '105%',
-                        scale: 0.3 + Math.random() * 0.6,
+                        scale: 0.4 + Math.random() * 0.5,
                       }}
                       animate={{
                         opacity: [0, 0.9, 0.9, 0],
                         y: ['105%', '-10%'],
                       }}
                       transition={{
-                        duration: 3.5 + Math.random() * 3,
+                        duration: 4 + Math.random() * 3,
                         repeat: Infinity,
-                        delay: i * 0.4,
+                        delay: i * 0.5,
                         ease: 'easeInOut',
                       }}
                       className="absolute text-gold-400"
@@ -303,14 +303,14 @@ export default function AcceptCard() {
               {/* Serene quiet particle waves for decline */}
               {status === 'decline' && (
                 <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
-                  {[...Array(8)].map((_, i) => (
+                  {[...Array(4)].map((_, i) => (
                     <motion.div
                       key={`decline-particle-${i}`}
                       initial={{
                         opacity: 0,
-                        x: `${15 + Math.random() * 70}%`,
+                        x: `${20 + Math.random() * 60}%`,
                         y: '100%',
-                        scale: 0.5 + Math.random() * 0.5,
+                        scale: 0.6 + Math.random() * 0.4,
                       }}
                       animate={{
                         opacity: [0, 0.6, 0.6, 0],

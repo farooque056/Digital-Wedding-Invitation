@@ -38,12 +38,10 @@ export default function Envelope({ onOpen, onSealClick }: EnvelopeProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900 overflow-hidden font-sans select-none" id="wedding-envelope-screen">
-      {/* Elegantly floating candle light / bokeh rings on background */}
+      {/* Elegantly floating candle light / bokeh rings on background (Only opacity pulse to avoid GPU transform recalculations) */}
       <motion.div
         animate={{
-          scale: [1, 1.06, 0.94, 1.06, 1],
-          rotate: [0, 4, -4, 4, 0],
-          opacity: [0.8, 0.95, 0.7, 0.95, 0.8]
+          opacity: [0.75, 0.9, 0.75]
         }}
         transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
         className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,#4c0f20,transparent_70%)] opacity-80"
@@ -66,23 +64,9 @@ export default function Envelope({ onOpen, onSealClick }: EnvelopeProps) {
         )}
       </AnimatePresence>
 
-      {/* Decorative floral elements on corners (Wobbles and spins funnily) */}
-      <motion.div
-        animate={{
-          rotate: [0, 90, 180, 270, 360],
-          scale: [1, 1.15, 0.9, 1.15, 1]
-        }}
-        transition={{ repeat: Infinity, duration: 14, ease: "easeInOut" }}
-        className="absolute top-0 left-0 w-48 h-48 border-t-2 border-l-2 border-gold-500/20 m-6 rounded-tl-3xl pointer-events-none origin-top-left"
-      />
-      <motion.div
-        animate={{
-          rotate: [0, -90, -180, -270, -360],
-          scale: [1, 0.9, 1.15, 0.9, 1]
-        }}
-        transition={{ repeat: Infinity, duration: 14, ease: "easeInOut" }}
-        className="absolute bottom-0 right-0 w-48 h-48 border-b-2 border-r-2 border-gold-500/20 m-6 rounded-br-3xl pointer-events-none origin-bottom-right"
-      />
+      {/* Decorative floral elements on corners (Simplified to static border overlays for smooth mobile performance) */}
+      <div className="absolute top-0 left-0 w-32 h-32 border-t border-l border-gold-500/20 m-4 rounded-tl-2xl pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 border-b border-r border-gold-500/20 m-4 rounded-br-2xl pointer-events-none" />
 
       {/* Main Container with 3D Perspective */}
       <motion.div
@@ -93,18 +77,16 @@ export default function Envelope({ onOpen, onSealClick }: EnvelopeProps) {
         style={{ perspective: 1600 }}
         className="relative w-full max-w-lg px-4 flex flex-col items-center justify-center"
       >
-        {/* Rich Floating Ambient 3D Animation on Main Envelope Container while closed (rubbery, funny wobble) */}
+        {/* Gentle, lightweight floating animation on main envelope container for fluid mobile rendering */}
         <motion.div
           animate={
             isOpening 
-              ? { y: 0, rotateZ: 0, scale: 1 } 
+              ? { y: 0, scale: 1 } 
               : { 
-                  y: [0, -15, 6, -15, 0], 
-                  rotateZ: [0, 2.5, -2.5, 2.5, 0],
-                  scale: [1, 1.05, 0.95, 1.04, 1]
+                  y: [0, -6, 0]
                 }
           }
-          transition={{ repeat: isOpening ? 0 : Infinity, duration: 3.5, ease: "easeInOut" }}
+          transition={{ repeat: isOpening ? 0 : Infinity, duration: 4, ease: "easeInOut" }}
           className="w-full flex flex-col items-center justify-center"
         >
           {/* Top greeting above envelope */}
@@ -131,10 +113,10 @@ export default function Envelope({ onOpen, onSealClick }: EnvelopeProps) {
             <div className="flex items-center justify-center gap-3 mt-3">
               <span className="h-[1px] w-14 bg-gradient-to-r from-transparent via-gold-400/50 to-gold-500/30" />
               <motion.div
-                animate={{ scale: [1, 1.25, 1], rotate: [0, 8, -8, 0] }}
+                animate={{ scale: [1, 1.15, 1] }}
                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
               >
-                <Heart className="h-3.5 w-3.5 text-rose-400/80 fill-rose-500/40 drop-shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
+                <Heart className="h-3.5 w-3.5 text-rose-400/80 fill-rose-500/40" />
               </motion.div>
               <span className="h-[1px] w-14 bg-gradient-to-l from-transparent via-gold-400/50 to-gold-500/30" />
             </div>
@@ -306,44 +288,33 @@ export default function Envelope({ onOpen, onSealClick }: EnvelopeProps) {
               </div>
             </motion.div>
 
-            {/* Wax Seal (Hover makes it wiggle-crazy, click makes it fast-spin, exit flies off like a rocket) */}
+            {/* Wax Seal (Sleek, high-performance interactions suited for mobile devices) */}
             <AnimatePresence>
               {!isOpening && (
                 <motion.button
                   id="envelope-seal-btn"
                   exit={{ 
-                    scale: [1, 1.8, 0.3, 0], 
-                    rotate: [0, -60, 1080, 2160], 
-                    y: [0, -80, 300, 800],
-                    x: [0, 100, -200, -400],
-                    opacity: [1, 1, 0.8, 0] 
+                    scale: 0.5,
+                    opacity: 0
                   }}
-                  transition={{ duration: 1.4, ease: "easeInOut" }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   onClick={handleOpenClick}
                   className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 group cursor-pointer"
                   whileHover={{ 
-                    scale: 1.25, 
-                    rotate: [0, -12, 12, -12, 12, -6, 6, 0],
-                    transition: {
-                      rotate: { repeat: Infinity, duration: 0.45, ease: "linear" },
-                      scale: { type: "spring", stiffness: 350, damping: 12 }
-                    }
+                    scale: 1.12, 
+                    rotate: 3,
+                    transition: { type: "spring", stiffness: 300, damping: 15 }
                   }}
-                  whileTap={{ scale: 0.8, rotate: 180 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <div className="relative">
-                    {/* Pulsing golden rings around seal */}
+                    {/* Pulsing golden ring around seal */}
                     <motion.div 
-                      className="absolute -inset-4 rounded-full border border-gold-300/50"
-                      animate={{ scale: [1, 1.35, 1], opacity: [0.4, 0.8, 0.4] }}
-                      transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+                      className="absolute -inset-4 rounded-full border border-gold-300/40"
+                      animate={{ scale: [1, 1.25, 1], opacity: [0.3, 0.7, 0.3] }}
+                      transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
                     />
-                    <motion.div 
-                      className="absolute -inset-7 rounded-full border border-gold-400/25"
-                      animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.5, 0.1] }}
-                      transition={{ repeat: Infinity, duration: 2.2, delay: 0.4, ease: "easeInOut" }}
-                    />
-                    <div className="absolute -inset-3 rounded-full bg-amber-400/15 filter blur-md group-hover:bg-amber-400/35 transition-all duration-300" />
+                    <div className="absolute -inset-3 rounded-full bg-amber-400/10 filter blur-md group-hover:bg-amber-400/25 transition-all duration-300" />
 
                     {/* 3D Wax stamp rendering */}
                     <div className="w-20 h-20 bg-gradient-to-br from-rose-600 via-rose-700 to-rose-900 group-hover:from-rose-500 group-hover:to-rose-800 rounded-full border-4 border-gold-400/70 shadow-[0_8px_25px_rgba(0,0,0,0.7)] flex items-center justify-center p-1.5 transition-all duration-300 relative select-none">

@@ -7,59 +7,44 @@ async function startServer() {
   const PORT = 3000;
 
   // Background Music Proxy Route
-  // Fetches from Google Drive server-side to bypass CORS, iframe sandbox, and third-party cookie blocks.
+  // Fetches from high-reliability classical MP3 servers to ensure background music is always audible.
   app.get("/api/bgm.mp3", async (req, res) => {
-    const fileId = "1WtLiC-3yqCuQIdBAiQ4uraFh1eeHaEqi";
-    let url = `https://docs.google.com/uc?export=download&id=${fileId}`;
-    
-    try {
-      console.log(`[BGM Proxy] Fetching audio from Google Drive ID: ${fileId}`);
-      
-      let response = await fetch(url, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    const audioUrls = [
+      "https://www.mfiles.co.uk/mp3-downloads/pachelbel-canon-in-d.mp3",
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    ];
+
+    for (const url of audioUrls) {
+      try {
+        console.log(`[BGM Proxy] Fetching background music from: ${url}`);
+        const response = await fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+          }
+        });
+
+        if (response.ok) {
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const contentType = response.headers.get("content-type") || "audio/mpeg";
+
+          console.log(`[BGM Proxy] Successfully fetched ${buffer.length} bytes from ${url}. Sending to client...`);
+
+          res.setHeader("Content-Type", contentType);
+          res.setHeader("Content-Length", buffer.length);
+          res.setHeader("Accept-Ranges", "bytes");
+          res.setHeader("Cache-Control", "public, max-age=86400");
+          res.send(buffer);
+          return;
+        } else {
+          console.warn(`[BGM Proxy] Failed response from ${url}: status ${response.status}`);
         }
-      });
-
-      let contentType = response.headers.get("content-type") || "";
-      
-      // Handle the "virus scan warning / confirm" screen if Google Drive serves an HTML warning page
-      if (contentType.includes("text/html")) {
-        const htmlText = await response.text();
-        const confirmMatch = htmlText.match(/confirm=([A-Za-z0-9_]+)/);
-        if (confirmMatch && confirmMatch[1]) {
-          const confirmToken = confirmMatch[1];
-          console.log(`[BGM Proxy] Found Google Drive confirm token: ${confirmToken}. Re-fetching...`);
-          url = `https://docs.google.com/uc?export=download&confirm=${confirmToken}&id=${fileId}`;
-          
-          response = await fetch(url, {
-            headers: {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-          });
-          contentType = response.headers.get("content-type") || "";
-        }
+      } catch (error: any) {
+        console.error(`[BGM Proxy] Error fetching from ${url}:`, error.message || error);
       }
-
-      if (!response.ok) {
-        throw new Error(`Google Drive returned HTTP ${response.status}`);
-      }
-
-      const finalContentType = contentType.includes("audio") ? contentType : "audio/mpeg";
-      const arrayBuffer = await response.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      console.log(`[BGM Proxy] Successfully fetched ${buffer.length} bytes of audio. Sending to client...`);
-
-      res.setHeader("Content-Type", finalContentType);
-      res.setHeader("Content-Length", buffer.length);
-      res.setHeader("Accept-Ranges", "bytes");
-      res.setHeader("Cache-Control", "public, max-age=3600");
-      res.send(buffer);
-    } catch (error: any) {
-      console.error("[BGM Proxy] Error proxying background music:", error.message || error);
-      res.status(500).send("Error fetching background music");
     }
+
+    res.status(500).send("Error fetching background music");
   });
 
   // Vite middleware for development
