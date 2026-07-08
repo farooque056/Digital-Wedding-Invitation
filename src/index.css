@@ -1,13 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@400;500;600;700;800&family=Cinzel+Decorative:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@400;500;600;700;800&family=Cinzel+Decorative:wght@400;700&family=Pinyon+Script&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-serif: "Cormorant Garamond", "Playfair Display", serif;
-  --font-script: "Great Vibes", "Alex Brush", cursive;
+  --font-script: "Great Vibes", "Pinyon Script", "Alex Brush", cursive;
   --font-sans: "Inter", sans-serif;
   --font-modern: "Montserrat", sans-serif;
   --font-cinzel: "Cinzel", serif;
   --font-cinzel-dec: "Cinzel Decorative", serif;
+  --font-bodoni: "Bodoni Moda", serif;
+  --font-pinyon: "Pinyon Script", cursive;
   
   --color-gold-50: #1a1916;
   --color-gold-100: #2a2824;
@@ -94,13 +96,15 @@
 }
 
 .bg-pattern-wedding {
-  background-color: #0a0a0a;
+  background-color: #070608;
   background-image: 
-    radial-gradient(#bfa37e 0.5px, transparent 0.5px), 
-    radial-gradient(#bfa37e 0.5px, #0a0a0a 0.5px);
-  background-size: 40px 40px;
-  background-position: 0 0, 20px 20px;
-  background-blend-mode: overlay;
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(197, 160, 89, 0.16), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(159, 18, 57, 0.12), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 40%, rgba(197, 160, 89, 0.08), transparent 70%),
+    radial-gradient(rgba(197, 160, 89, 0.25) 0.75px, transparent 0.75px), 
+    radial-gradient(rgba(197, 160, 89, 0.15) 0.75px, #070608 0.75px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  background-position: center top, right bottom, left center, 0 0, 24px 24px;
 }
 
 /* Beautiful textured overlay matching Sophisticated Dark specification */
@@ -109,8 +113,8 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.03;
-  background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+  opacity: 0.06;
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
   z-index: 0;
 }
 

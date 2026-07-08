@@ -167,82 +167,96 @@ export default function AcceptCard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.5 }}
-              className="w-full bg-stone-950/95 border border-gold-500/30 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden"
+              className="w-full bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 backdrop-blur-xl border border-gold-400/40 rounded-3xl p-7 md:p-12 shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative overflow-hidden group"
             >
+              {/* Top & Bottom Glowing Golden Lines */}
+              <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-gold-300/80 to-transparent" />
+              <div className="absolute bottom-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
+
+              {/* Ambient Radial Background Glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-gold-500/15 via-transparent to-transparent opacity-70 pointer-events-none" />
+
               {/* Decorative Corner Borders */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-gold-500/30 rounded-tl-3xl pointer-events-none" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-gold-500/30 rounded-tr-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-gold-500/30 rounded-bl-3xl pointer-events-none" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-gold-500/30 rounded-br-3xl pointer-events-none" />
+              <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-gold-400/40 rounded-tl-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-gold-400/40 rounded-tr-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-gold-400/40 rounded-bl-3xl pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-gold-400/40 rounded-br-3xl pointer-events-none" />
 
-              <div className="space-y-6 relative z-10">
-                {/* Instant Action Prompt */}
-                <div className="space-y-4">
-                  <label className="block text-[10px] text-gold-400/60 uppercase tracking-[0.2em] font-bold font-mono text-center mb-1">
-                    Tap to Stamp & Seal Your Presence 👇
-                  </label>
+              <div className="space-y-8 relative z-10">
+                {/* Instant Action Header */}
+                <div className="text-center space-y-2">
+                  <span className="inline-block text-gold-300 font-serif text-xs uppercase tracking-[0.3em] font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    Kindly Respond
+                  </span>
+                  <p className="text-[11px] text-stone-400/90 font-mono uppercase tracking-[0.2em]">
+                    Tap an option below to stamp your wax seal 👇
+                  </p>
+                </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* JOYFUL ACCEPT BUTTON */}
-                    <button
-                      type="button"
-                      disabled={isSubmitting}
-                      onClick={() => handleOptionClick('accept')}
-                      className={`flex flex-col items-center justify-center text-center p-5 rounded-2xl border transition-all duration-300 relative ${
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  {/* JOYFUL ACCEPT BUTTON - Rich Rose Gold Variety */}
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={() => handleOptionClick('accept')}
+                    className={`group/btn flex flex-col items-center justify-center text-center p-6 rounded-2xl border transition-all duration-500 relative overflow-hidden ${
+                      status === 'accept' && isSubmitting
+                        ? 'bg-rose-950/40 border-rose-400 text-rose-200 scale-95 shadow-[0_0_30px_rgba(244,63,94,0.3)]'
+                        : 'bg-gradient-to-b from-rose-950/30 via-stone-900/80 to-stone-950/90 border-rose-500/30 hover:border-rose-400/70 hover:shadow-[0_10px_35px_rgba(244,63,94,0.18)] hover:-translate-y-1'
+                    }`}
+                  >
+                    <div className="absolute top-0 inset-x-4 h-[1px] bg-gradient-to-r from-transparent via-rose-400/40 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                    
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: 6 }}
+                      className={`w-14 h-14 rounded-full mb-4 flex items-center justify-center border shadow-lg transition-all ${
                         status === 'accept' && isSubmitting
-                          ? 'bg-rose-500/10 border-rose-500/40 text-rose-200 scale-95'
-                          : 'bg-stone-900/60 border-gold-500/20 text-gold-200 hover:text-white hover:border-gold-500/50 hover:scale-[1.01] hover:bg-stone-900'
+                          ? 'bg-rose-500/30 border-rose-300 text-rose-300 animate-pulse'
+                          : 'bg-gradient-to-br from-rose-900/60 to-stone-900 border-rose-400/50 text-rose-400 group-hover/btn:border-rose-300 group-hover/btn:text-rose-300'
                       }`}
                     >
-                      <motion.div 
-                        whileHover={{ scale: 1.08 }}
-                        className={`p-2.5 rounded-full mb-3 border ${
-                          status === 'accept'
-                            ? 'bg-rose-500/20 border-rose-400 text-rose-400 animate-pulse'
-                            : 'bg-stone-800 border-stone-700 text-gold-300'
-                        }`}
-                      >
-                        <Heart className="h-5 w-5 fill-current" />
-                      </motion.div>
-                      
-                      <span className="font-serif text-sm font-semibold tracking-wide text-white text-center block w-full">
-                        {isSubmitting && status === 'accept' ? 'Sealing Presence...' : 'Joyfully Accepts'}
-                      </span>
-                      <span className="text-[10px] font-mono tracking-wider uppercase text-gold-300 mt-1.5 text-center block w-full">
-                        Looking Forward! ❤️
-                      </span>
-                    </button>
+                      <Heart className="h-6 w-6 fill-current drop-shadow-[0_2px_8px_rgba(244,63,94,0.5)]" />
+                    </motion.div>
+                    
+                    <span className="font-serif text-lg font-medium tracking-wide text-white text-center block w-full group-hover/btn:text-rose-100 transition-colors">
+                      {isSubmitting && status === 'accept' ? 'Sealing Presence...' : 'Joyfully Accepts'}
+                    </span>
+                    <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-rose-300/80 mt-2 text-center block w-full">
+                      Looking Forward! ♥
+                    </span>
+                  </button>
 
-                    {/* DECLINES WITH REGRETS BUTTON */}
-                    <button
-                      type="button"
-                      disabled={isSubmitting}
-                      onClick={() => handleOptionClick('decline')}
-                      className={`flex flex-col items-center justify-center text-center p-5 rounded-2xl border transition-all duration-300 relative ${
+                  {/* DECLINES WITH REGRETS BUTTON - Elegant Pearl Stone Variety */}
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={() => handleOptionClick('decline')}
+                    className={`group/btn flex flex-col items-center justify-center text-center p-6 rounded-2xl border transition-all duration-500 relative overflow-hidden ${
+                      status === 'decline' && isSubmitting
+                        ? 'bg-stone-900/90 border-gold-400/50 text-stone-200 scale-95 shadow-[0_0_30px_rgba(235,216,170,0.15)]'
+                        : 'bg-gradient-to-b from-stone-900/80 via-stone-950/90 to-black/90 border-gold-500/25 hover:border-gold-300/60 hover:shadow-[0_10px_35px_rgba(235,216,170,0.1)] hover:-translate-y-1'
+                    }`}
+                  >
+                    <div className="absolute top-0 inset-x-4 h-[1px] bg-gradient-to-r from-transparent via-gold-300/40 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                    
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: -6 }}
+                      className={`w-14 h-14 rounded-full mb-4 flex items-center justify-center border shadow-lg transition-all ${
                         status === 'decline' && isSubmitting
-                          ? 'bg-stone-900/80 border-stone-500/40 text-stone-200 scale-95'
-                          : 'bg-stone-900/60 border-gold-500/20 text-gold-200 hover:text-white hover:border-gold-500/50 hover:scale-[1.01] hover:bg-stone-900'
+                          ? 'bg-stone-800 border-gold-400 text-gold-300'
+                          : 'bg-gradient-to-br from-stone-850 to-stone-950 border-gold-400/40 text-gold-300 group-hover/btn:border-gold-300'
                       }`}
                     >
-                      <motion.div 
-                        whileHover={{ scale: 1.08 }}
-                        className={`p-2.5 rounded-full mb-3 border ${
-                          status === 'decline'
-                            ? 'bg-stone-800 border-stone-600 text-stone-200'
-                            : 'bg-stone-800 border-stone-700 text-gold-300'
-                        }`}
-                      >
-                        <span className="text-lg leading-none block">🕊️</span>
-                      </motion.div>
-                      
-                      <span className="font-serif text-sm font-semibold tracking-wide text-white text-center block w-full">
-                        {isSubmitting && status === 'decline' ? 'Sending Regrets...' : 'Declines with Regrets'}
-                      </span>
-                      <span className="text-[10px] font-mono tracking-wider uppercase text-gold-300 mt-1.5 text-center block w-full">
-                        Respectfully Absent 🕊️
-                      </span>
-                    </button>
-                  </div>
+                      <span className="text-xl leading-none drop-shadow">🕊️</span>
+                    </motion.div>
+                    
+                    <span className="font-serif text-lg font-medium tracking-wide text-white text-center block w-full group-hover/btn:text-gold-100 transition-colors">
+                      {isSubmitting && status === 'decline' ? 'Sending Regrets...' : 'Declines with Regrets'}
+                    </span>
+                    <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-gold-400/80 mt-2 text-center block w-full">
+                      Respectfully Absent 🕊️
+                    </span>
+                  </button>
                 </div>
               </div>
             </motion.div>
@@ -254,7 +268,7 @@ export default function AcceptCard() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ type: 'spring', damping: 20, stiffness: 180 }}
-              className="w-full bg-stone-950/95 border border-gold-500/30 rounded-3xl p-8 md:p-12 shadow-2xl relative text-center overflow-hidden"
+              className="w-full bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 backdrop-blur-xl border border-gold-400/40 rounded-3xl p-8 md:p-14 shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative text-center overflow-hidden"
             >
               {/* Confetti & Particle Effects for Joyful accepts */}
               {status === 'accept' && (

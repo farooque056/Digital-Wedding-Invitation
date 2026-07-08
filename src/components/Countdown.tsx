@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 
 export default function Countdown() {
-  const targetDate = new Date('2026-06-14T09:30:00+05:30').getTime(); // 09:30 AM IST Calicut Kerala
+  const targetDate = new Date('2026-08-06T11:00:00+05:30').getTime(); // 11:00 AM IST August 6, 2026
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -47,33 +47,30 @@ export default function Countdown() {
     return (
       <div className="flex flex-col items-center justify-center py-6 text-center" id="countdown-completed">
         <div className="bg-gold-50 border border-gold-400 text-gold-800 text-sm font-serif italic py-3 px-6 rounded-full shadow-inner tracking-widest uppercase">
-          🎉 Today is the Big Day! Celebrating Sinan & Fahmida 🎉
+          🎉 Today is the Big Day! Celebrating Fathima Lena & Sharuq 🎉
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 py-4 w-full" id="countdown-block-wrapper">
-      <div className="flex items-center gap-2 text-stone-500 font-sans text-[11px] uppercase tracking-widest mb-1.5">
-        <Clock className="h-3.5 w-3.5 text-gold-600 animate-pulse" />
-        <span>Countdown to the Nikah</span>
+    <div className="flex flex-col items-center gap-5 py-4 w-full" id="countdown-block-wrapper">
+      <div className="flex items-center gap-2 text-gold-300 font-serif text-xs uppercase tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+        <Clock className="h-3.5 w-3.5 text-gold-400 animate-pulse" />
+        <span>Countdown to the Nikkah</span>
       </div>
 
-      <div className="grid grid-cols-4 gap-2 sm:gap-4 max-w-sm sm:max-w-md w-full justify-center">
+      <div className="grid grid-cols-4 gap-3 sm:gap-5 max-w-sm sm:max-w-lg w-full justify-center px-2">
         {timeBlocks.map((block) => (
           <div
             key={block.label}
-            className="flex flex-col items-center bg-white/75 backdrop-blur-sm p-2 sm:p-4 rounded-xl border border-gold-500/15 shadow-[0_4px_12px_rgba(197,160,89,0.06)] relative overflow-hidden"
+            className="relative flex flex-col items-center justify-center bg-black/30 backdrop-blur-md p-3 sm:p-4 rounded-lg border border-gold-500/20 transition-all duration-300"
           >
-            {/* Soft inner floral design hint */}
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-gold-300 via-gold-500 to-gold-300" />
-            
-            <div className="text-xl sm:text-3xl font-serif font-black text-stone-850 tracking-tight leading-none">
+            <div className="text-2xl sm:text-4xl font-serif font-semibold text-white tracking-tight leading-none">
               {String(block.value).padStart(2, '0')}
             </div>
             
-            <div className="text-[9px] sm:text-[10px] font-sans uppercase tracking-widest text-gold-700 font-medium mt-1">
+            <div className="text-[9px] sm:text-[11px] font-sans uppercase tracking-[0.2em] text-gold-400/80 font-medium mt-1.5">
               {block.label}
             </div>
           </div>

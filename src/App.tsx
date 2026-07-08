@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, Calendar, Sparkles } from 'lucide-react';
+import { Heart, Volume2, VolumeX } from 'lucide-react';
 import Envelope from './components/Envelope';
-import Soundtrack from './components/Soundtrack';
 import Countdown from './components/Countdown';
 import Couple from './components/Couple';
 import Venue from './components/Venue';
@@ -11,6 +10,9 @@ import AcceptCard from './components/AcceptCard';
 export default function App() {
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
   const [petals, setPetals] = useState<{ id: number; left: string; delay: string; duration: string; size: string }[]>([]);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isMusicStarted, setIsMusicStarted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Generate falling rose petals on load
   useEffect(() => {
@@ -24,13 +26,75 @@ export default function App() {
     setPetals(generatedPetals);
   }, []);
 
+  // Set default audio volume on mount
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.15; // Soft, comfortable ambient background volume
+    }
+  }, []);
+
+  const handleSealClick = () => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.15; // Soft, comfortable ambient background volume
+      audioRef.current.play()
+        .then(() => {
+          setIsMusicStarted(true);
+        })
+        .catch((err) => {
+          console.warn("Audio playback failed or was blocked by browser autoplay policy:", err);
+          // Set music started anyway to show the control button so user can click to unmute/play
+          setIsMusicStarted(true);
+        });
+    }
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      const newMuted = !isMuted;
+      audioRef.current.muted = newMuted;
+      setIsMuted(newMuted);
+      
+      // If paused due to browser policy, play it when they interact with the mute button
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(e => console.warn(e));
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-pattern-wedding text-stone-800 font-sans relative overflow-x-hidden" id="wedding-app-root">
       
+      {/* Background Audio Player */}
+      <audio
+        ref={audioRef}
+        src="/api/bgm.mp3"
+        loop
+        preload="auto"
+      />
+
+      {/* Floating Ambient Music Control (Volume Toggle) */}
+      {isMusicStarted && (
+        <button
+          id="music-mute-toggle-fixed"
+          onClick={toggleMute}
+          className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-11 h-11 rounded-full bg-stone-950/90 border border-gold-500/30 text-gold-300 hover:text-gold-100 hover:border-gold-400/60 shadow-[0_4px_20px_rgba(212,175,55,0.25)] hover:shadow-[0_4px_25px_rgba(212,175,55,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+          title={isMuted ? "Unmute Background Music" : "Mute Background Music"}
+        >
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-stone-400 animate-pulse" />
+          ) : (
+            <Volume2 className="w-5 h-5 text-gold-400" />
+          )}
+        </button>
+      )}
+
       {/* 1. Envelope Gatekeeper */}
       <AnimatePresence mode="wait">
         {!isEnvelopeOpen && (
-          <Envelope onOpen={() => setIsEnvelopeOpen(true)} />
+          <Envelope 
+            onOpen={() => setIsEnvelopeOpen(true)} 
+            onSealClick={handleSealClick}
+          />
         )}
       </AnimatePresence>
 
@@ -42,8 +106,12 @@ export default function App() {
           transition={{ duration: 1.5, ease: 'easeOut' }}
           className="relative min-h-screen animate-fade-in"
         >
-          {/* Floating Sound Controller */}
-          <Soundtrack autoPlayTrigger={isEnvelopeOpen} />
+          {/* Ambient Luxury Page Background Glow Layer */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+            <div className="absolute top-1/4 left-10 w-96 h-96 bg-gold-500/10 rounded-full filter blur-[120px] animate-pulse-slow" />
+            <div className="absolute bottom-1/3 right-10 w-96 h-96 bg-rose-900/15 rounded-full filter blur-[140px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+            <div className="absolute top-2/3 left-1/3 w-[30rem] h-[30rem] bg-gold-400/5 rounded-full filter blur-[150px]" />
+          </div>
 
           {/* Falling Organic Rose Petals */}
           <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden" id="rose-petals-layer">
@@ -69,7 +137,7 @@ export default function App() {
             <div className="max-w-6xl mx-auto flex items-center justify-center">
               {/* Branding Monogram initials logo */}
               <a href="#hero" className="font-serif font-black text-gold-600 tracking-wider text-2xl hover:scale-105 transition-transform flex items-center gap-2">
-                S ⚭ F
+                F ⚭ S
               </a>
             </div>
           </header>
@@ -81,7 +149,7 @@ export default function App() {
               <iframe
                 loading="lazy"
                 title="Gumlet video player"
-                src="https://play.gumlet.io/embed/6a2a293ee9db499e93efe325?background=true&autoplay=true&loop=true&disable_player_controls=true"
+                src="https://play.gumlet.io/embed/6a4e8f701c338f62ccc2d5d0?background=true&autoplay=true&loop=true&disable_player_controls=true"
                 className="absolute top-1/2 left-1/2 w-[177.78vh] min-w-full h-full min-h-[56.25vw] -translate-x-1/2 -translate-y-1/2 scale-105 border-0"
                 referrerPolicy="origin"
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
@@ -96,19 +164,19 @@ export default function App() {
 
             <div className="text-center max-w-4xl relative z-10 flex flex-col items-center px-4">
               <span className="text-gold-400 font-mono text-[10px] uppercase tracking-[0.4em] block mb-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                The Nikah Of
+                The Nikkah Of
               </span>
               
-              {/* Bride & Groom Main Callout - High-end Cinzel Luxury Layout */}
-              <h1 className="font-cinzel text-3xl sm:text-4xl md:text-5xl font-light tracking-[0.22em] uppercase leading-relaxed max-w-lg md:max-w-4xl mx-auto select-none transition-all duration-1000 hover:scale-[1.01] mb-6 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
-                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-100 to-gold-200 font-normal">
-                  Sinan
+              {/* Bride & Groom Main Callout - High-end Luxury Layout */}
+              <h1 className="font-cinzel-dec text-3xl sm:text-4xl md:text-5.5xl font-normal tracking-[0.18em] uppercase leading-relaxed max-w-lg md:max-w-4xl mx-auto select-none transition-all duration-1000 hover:scale-[1.01] mb-6 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
+                <span className="inline-block font-cinzel-dec text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-100 to-gold-200 font-normal">
+                  Fathima Lena
                 </span>
-                <span className="block md:inline-block font-script text-4xl sm:text-5xl md:text-6xl text-gold-300 normal-case tracking-normal my-2 md:my-0 md:mx-4 drop-shadow-[0_2px_15px_rgba(235,216,170,0.5)] align-middle">
+                <span className="block md:inline-block font-pinyon text-5xl sm:text-6xl md:text-7xl text-gold-300 normal-case tracking-normal my-2 md:my-0 md:mx-5 drop-shadow-[0_2px_15px_rgba(235,216,170,0.6)] align-middle">
                   &amp;
                 </span>
-                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-100 to-gold-200 font-normal">
-                  Fahmida
+                <span className="inline-block font-cinzel-dec text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-100 to-gold-200 font-normal">
+                  Sharuq
                 </span>
               </h1>
 
@@ -116,9 +184,12 @@ export default function App() {
               <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold-400/60 to-transparent mb-6" />
 
               {/* Elegant Date specification */}
-              <div className="mb-10 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-                <span className="font-cinzel text-xs sm:text-sm tracking-[0.3em] uppercase text-gold-200 font-light">
-                  Sunday <span className="text-gold-400/60 mx-1.5">•</span> 14th June, 2026 <span className="text-gold-400/60 mx-1.5">•</span> 09:30 AM
+              <div className="mb-10 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] flex flex-col items-center gap-2">
+                <span className="font-cinzel text-xs sm:text-sm tracking-[0.25em] uppercase text-gold-200 font-light text-center">
+                  Thursday <span className="text-gold-400/60 mx-1.5">•</span> 6th August, 2026 <span className="text-gold-400/60 mx-1.5">•</span> 11:00 AM - 3:00 PM
+                </span>
+                <span className="font-serif italic text-xs tracking-[0.2em] text-gold-300/80">
+                  [23 Safar 1448 Hijri]
                 </span>
               </div>
 
@@ -163,8 +234,11 @@ export default function App() {
           </div>
 
           {/* Elegant Footer */}
-          <footer className="bg-[#1c1917] text-stone-400 font-sans text-xs py-16 px-6 border-t-2 border-gold-500/20 select-none">
-            <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-6">
+          <footer className="bg-gradient-to-b from-[#131115] via-[#0b0a0d] to-[#060507] text-stone-400 font-sans text-xs py-16 px-6 border-t border-gold-400/30 select-none relative overflow-hidden">
+            {/* Subtle background radial glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold-500/10 via-transparent to-transparent opacity-60 pointer-events-none" />
+            
+            <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-6 relative z-10">
               
               {/* Golden script final greeting */}
               <h3 className="font-script text-4xl text-gold-300 font-normal">
