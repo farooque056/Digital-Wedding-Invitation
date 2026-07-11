@@ -102,23 +102,16 @@ export default function App() {
 
           {/* 3. Hero Section */}
           <section id="hero" className="min-h-[85vh] flex flex-col justify-center items-center py-20 px-4 relative select-none overflow-hidden">
-            {/* Background Video Layer / Static Fallback on Mobile for ultra performance */}
+            {/* Background Video Layer */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-40 mix-blend-lighten">
-              {isMobile ? (
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
-                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1200')` }}
-                />
-              ) : (
-                <iframe
-                  loading="lazy"
-                  title="Gumlet video player"
-                  src="https://play.gumlet.io/embed/6a4e8f701c338f62ccc2d5d0?background=true&autoplay=true&loop=true&disable_player_controls=true"
-                  className="absolute top-1/2 left-1/2 w-[177.78vh] min-w-full h-full min-h-[56.25vw] -translate-x-1/2 -translate-y-1/2 scale-105 border-0"
-                  referrerPolicy="origin"
-                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
-                />
-              )}
+              <iframe
+                loading="lazy"
+                title="Gumlet video player"
+                src="https://play.gumlet.io/embed/6a4e8f701c338f62ccc2d5d0?background=true&autoplay=true&loop=true&disable_player_controls=true"
+                className="absolute top-1/2 left-1/2 w-[177.78vh] min-w-full h-full min-h-[56.25vw] -translate-x-1/2 -translate-y-1/2 scale-105 border-0"
+                referrerPolicy="origin"
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
+              />
               <div className="absolute inset-0 bg-black/55" />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]" />
             </div>
