@@ -165,6 +165,7 @@ export default function AcceptCard() {
               key="rsvp-clean-card"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.02 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.5 }}
               className="w-full bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 backdrop-blur-xl border border-gold-400/40 rounded-3xl p-7 md:p-12 shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative overflow-hidden group"
@@ -266,6 +267,7 @@ export default function AcceptCard() {
               key="rsvp-receipt-card"
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.02 }}
               exit={{ opacity: 0 }}
               transition={{ type: 'spring', damping: 20, stiffness: 180 }}
               className="w-full bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 backdrop-blur-xl border border-gold-400/40 rounded-3xl p-8 md:p-14 shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative text-center overflow-hidden"
