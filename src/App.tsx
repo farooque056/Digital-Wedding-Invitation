@@ -11,37 +11,56 @@ import AcceptCard from './components/AcceptCard';
 export default function App() {
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
   const [petals, setPetals] = useState<{ id: number; left: string; delay: string; duration: string; size: string }[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Generate falling rose petals on load
+  // Generate falling rose petals on load with mobile optimization
   useEffect(() => {
-    const generatedPetals = Array.from({ length: 18 }).map((_, i) => ({
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    const isMobileDevice = window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const petalCount = isMobileDevice ? 8 : 18;
+
+    const generatedPetals = Array.from({ length: petalCount }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 10}s`,
-      duration: `${8 + Math.random() * 12}s`,
-      size: `${8 + Math.random() * 12}px`,
+      delay: `${Math.random() * 8}s`,
+      duration: isMobileDevice ? `${10 + Math.random() * 10}s` : `${8 + Math.random() * 12}s`,
+      size: isMobileDevice ? `${6 + Math.random() * 8}px` : `${8 + Math.random() * 12}px`,
     }));
     setPetals(generatedPetals);
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   return (
     <div className="min-h-screen bg-pattern-wedding text-stone-800 font-sans relative overflow-x-hidden" id="wedding-app-root">
       
-      {/* 1. Envelope Gatekeeper */}
+      {/* 1. Envelope Gatekeeper & Main Wedding Website Content (Smoother transition sequence) */}
       <AnimatePresence mode="wait">
-        {!isEnvelopeOpen && (
-          <Envelope onOpen={() => setIsEnvelopeOpen(true)} />
-        )}
-      </AnimatePresence>
-
-      {/* 2. Main Wedding Website Content (Unfolds after envelope opens) */}
-      {isEnvelopeOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
-          className="relative min-h-screen animate-fade-in"
-        >
+        {!isEnvelopeOpen ? (
+          <motion.div key="envelope-screen" className="contents">
+            <Envelope onOpen={() => setIsEnvelopeOpen(true)} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="wedding-main-content"
+            initial={{ opacity: 0, scale: 0.82, rotateX: 18, y: 120, z: -200, filter: "blur(15px)" }}
+            animate={{ opacity: 1, scale: 1, rotateX: 0, y: 0, z: 0, filter: "blur(0px)" }}
+            transition={{
+              type: "spring",
+              damping: 24,
+              stiffness: 45,
+              mass: 1.3,
+              restDelta: 0.001,
+              delay: 0.25
+            }}
+            style={{ transformStyle: "preserve-3d", perspective: 1200 }}
+            className="relative min-h-screen"
+          >
           {/* Ambient Luxury Page Background Glow Layer */}
           <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
             <div className="absolute top-1/4 left-10 w-96 h-96 bg-gold-500/10 rounded-full filter blur-[120px] animate-pulse-slow" />
@@ -83,17 +102,24 @@ export default function App() {
 
           {/* 3. Hero Section */}
           <section id="hero" className="min-h-[85vh] flex flex-col justify-center items-center py-20 px-4 relative select-none overflow-hidden">
-            {/* Background Video Layer */}
+            {/* Background Video Layer / Static Fallback on Mobile for ultra performance */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-40 mix-blend-lighten">
-              <iframe
-                loading="lazy"
-                title="Gumlet video player"
-                src="https://play.gumlet.io/embed/6a2a293ee9db499e93efe325?background=true&autoplay=true&loop=true&disable_player_controls=true"
-                className="absolute top-1/2 left-1/2 w-[177.78vh] min-w-full h-full min-h-[56.25vw] -translate-x-1/2 -translate-y-1/2 scale-105 border-0"
-                referrerPolicy="origin"
-                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
-              />
-              <div className="absolute inset-0 bg-[#0a0a0a]/40" />
+              {isMobile ? (
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1200')` }}
+                />
+              ) : (
+                <iframe
+                  loading="lazy"
+                  title="Gumlet video player"
+                  src="https://play.gumlet.io/embed/6a4e8f701c338f62ccc2d5d0?background=true&autoplay=true&loop=true&disable_player_controls=true"
+                  className="absolute top-1/2 left-1/2 w-[177.78vh] min-w-full h-full min-h-[56.25vw] -translate-x-1/2 -translate-y-1/2 scale-105 border-0"
+                  referrerPolicy="origin"
+                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
+                />
+              )}
+              <div className="absolute inset-0 bg-black/55" />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]" />
             </div>
 
@@ -107,17 +133,27 @@ export default function App() {
               </span>
               
               {/* Bride & Groom Main Callout - High-end Luxury Layout */}
-              <h1 className="font-cinzel-dec text-3xl sm:text-4xl md:text-5.5xl font-normal tracking-[0.18em] uppercase leading-relaxed max-w-lg md:max-w-4xl mx-auto select-none transition-all duration-1000 hover:scale-[1.01] mb-6 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
-                <span className="inline-block font-cinzel-dec text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-100 to-gold-200 font-normal">
+              <motion.h1
+                animate={{
+                  y: [0, -8, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="font-cinzel-dec text-3xl sm:text-4xl md:text-5.5xl font-normal tracking-[0.18em] uppercase leading-relaxed max-w-lg md:max-w-4xl mx-auto select-none transition-all duration-1000 hover:scale-[1.01] mb-6 drop-shadow-[0_4px_30px_rgba(0,0,0,0.98)]"
+              >
+                <span className="inline-block font-cinzel-dec text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-50 to-gold-200 font-normal filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
                   Fathima Lena
                 </span>
                 <span className="block md:inline-block font-pinyon text-5xl sm:text-6xl md:text-7xl text-gold-300 normal-case tracking-normal my-2 md:my-0 md:mx-5 drop-shadow-[0_2px_15px_rgba(235,216,170,0.6)] align-middle">
                   &amp;
                 </span>
-                <span className="inline-block font-cinzel-dec text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-100 to-gold-200 font-normal">
+                <span className="inline-block font-cinzel-dec text-transparent bg-clip-text bg-gradient-to-b from-white via-stone-50 to-gold-200 font-normal filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
                   Sharuq
                 </span>
-              </h1>
+              </motion.h1>
 
               {/* Delicate line divider */}
               <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold-400/60 to-transparent mb-6" />
@@ -190,8 +226,9 @@ export default function App() {
             </div>
           </footer>
 
-        </motion.div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

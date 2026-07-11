@@ -47,7 +47,7 @@ export default function Soundtrack({ autoPlayTrigger }: SoundtrackProps) {
       player = new win.YT.Player('youtube-soundtrack-player', {
         height: '1',
         width: '1',
-        videoId: 'eNhsUQmJV3g',
+        videoId: 'VpNHCKYm4GM',
         playerVars: {
           autoplay: autoPlayTrigger ? 1 : 0,
           controls: 0,
@@ -57,7 +57,7 @@ export default function Soundtrack({ autoPlayTrigger }: SoundtrackProps) {
           rel: 0,
           showinfo: 0,
           loop: 1,
-          playlist: 'eNhsUQmJV3g', // Required by YouTube to enable loop functionality
+          playlist: 'VpNHCKYm4GM', // Required by YouTube to enable loop functionality
           mute: 0,
           origin: win.location.origin
         },

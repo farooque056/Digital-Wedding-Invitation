@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { MapPin, Map, Copy, Check, Compass } from 'lucide-react';
 
 export default function Venue() {
@@ -27,7 +28,17 @@ Malappuram, Kerala, India 676504`;
         <div className="h-[1.5px] w-12 bg-gold-400 mx-auto mt-4" />
       </div>
 
-      <div className="relative rounded-3xl border border-gold-400/30 p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden max-w-2xl mx-auto bg-stone-950/90">
+      <motion.div
+        animate={{
+          y: [0, -8, 0],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="relative rounded-3xl border border-gold-400/30 p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden max-w-2xl mx-auto bg-stone-950/90 will-change-transform"
+      >
         {/* Background Image with Elegant Gradient Overlay */}
         <div className="absolute inset-0 z-0">
           <img
@@ -100,7 +111,7 @@ Malappuram, Kerala, India 676504`;
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

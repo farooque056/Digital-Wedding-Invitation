@@ -6,6 +6,50 @@ interface EnvelopeProps {
   onOpen: () => void;
 }
 
+// Constants for 3D spring transition and depth-of-field stagger
+const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+
+const cardVariants = {
+  closed: { 
+    y: 0, 
+    scale: 0.88, 
+    rotateX: 5, 
+    z: 0, 
+    filter: isMobileDevice ? 'none' : 'blur(2px)', 
+    opacity: 0.85,
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+  },
+  opening: { 
+    y: '-12%', 
+    scale: 0.94, 
+    rotateX: 2, 
+    z: 30, 
+    filter: isMobileDevice ? 'none' : 'blur(0.8px)', 
+    opacity: 1,
+    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+  },
+  open: { 
+    y: '-100%', 
+    scale: 1.05, 
+    rotateX: -4, 
+    z: 120, 
+    filter: isMobileDevice ? 'none' : 'blur(0px)', 
+    opacity: 1,
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 10px 20px -5px rgba(0, 0, 0, 0.3)'
+  }
+};
+
+const itemVariants = {
+  closed: { opacity: 0, y: 15, scale: 0.95 },
+  opening: { opacity: 0.3, y: 10, scale: 0.98 },
+  open: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { type: 'spring', damping: 14, stiffness: 90 }
+  }
+};
+
 export default function Envelope({ onOpen }: EnvelopeProps) {
   const [isOpening, setIsOpening] = useState(false);
   const [isLetterOut, setIsLetterOut] = useState(false);
@@ -35,10 +79,16 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
 
       {/* Main Container */}
       <motion.div
-        initial={{ scale: 0.92, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 1.08, opacity: 0 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ scale: 0.75, opacity: 0, y: 55 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 1.08, opacity: 0, y: -50 }}
+        transition={{ 
+          type: "spring", 
+          damping: 22, 
+          stiffness: 75, 
+          mass: 1.15,
+          restDelta: 0.001
+        }}
         className="relative w-full max-w-lg px-4 flex flex-col items-center justify-center"
       >
         {/* Top greeting above envelope */}
@@ -74,23 +124,32 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
           </div>
         </motion.div>
 
-        {/* The Envelope */}
+        {/* The Envelope with 3D Perspective context */}
         <motion.div 
           className="relative w-full aspect-[4/3] bg-stone-900 rounded-xl shadow-2xl border border-gold-500/15 overflow-visible"
           whileHover={{ y: -4, scale: 1.01 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{ perspective: 1200 }}
         >
           {/* Back side of envelope / Deep Burgundy cavity */}
           <div className="absolute inset-0 bg-burgundy-900 rounded-xl overflow-hidden border border-gold-500/10">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#4a1023_0%,#28030f_100%)]" />
           </div>
 
-          {/* Invitation letter (Slides UP on open) */}
+          {/* Invitation letter (Slides UP on open with 3D depth of field scale & stagger effects) */}
           <motion.div
-            initial={{ y: 0 }}
-            animate={isLetterOut ? { y: '-100%', scale: 1.02 } : isOpening ? { y: '-10%' } : { y: 0 }}
-            transition={{ type: 'spring', damping: 22, stiffness: 55 }}
-            className="absolute inset-[8%] bg-white rounded-lg shadow-lg flex flex-col items-center justify-between p-6 overflow-hidden border border-stone-100"
+            initial="closed"
+            animate={isLetterOut ? "open" : isOpening ? "opening" : "closed"}
+            variants={cardVariants}
+            transition={{ 
+              type: 'spring', 
+              damping: 18, 
+              stiffness: 45,
+              mass: 1.2,
+              staggerChildren: 0.12,
+              delayChildren: 0.35
+            }}
+            className="absolute inset-[8%] bg-white rounded-lg shadow-lg flex flex-col items-center justify-between p-6 overflow-hidden border border-stone-100 z-15"
           >
             {/* Elegant Floral watermark background inside paper */}
             <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle,#c5a059_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
@@ -98,8 +157,11 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
             {/* Elegant border inside paper */}
             <div className="absolute inset-2 border border-gold-500/20 rounded-md pointer-events-none" />
 
-            {/* Content of invite card */}
-            <div className="flex flex-col items-center text-center mt-2 w-full">
+            {/* Content of invite card (Staggered Item 1) */}
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col items-center text-center mt-2 w-full"
+            >
               <span className="text-[9px] font-mono tracking-[0.2em] text-stone-400 uppercase">Save the Date</span>
               <div className="h-[1px] w-8 bg-gold-500/30 my-1.5" />
               <p className="text-[12px] font-serif italic text-gold-600">Together with their families</p>
@@ -111,16 +173,20 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
               <p className="text-[10px] text-stone-500 font-sans tracking-wide mt-2 max-w-[80%] uppercase text-center font-light leading-relaxed">
                 Nikah Ceremony & Wedding Feast
               </p>
-            </div>
+            </motion.div>
 
-            <div className="flex flex-col items-center text-center w-full mb-2">
+            {/* Footer / Date details (Staggered Item 2) */}
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col items-center text-center w-full mb-2"
+            >
               <span className="text-xs font-serif text-gold-700 tracking-wider font-semibold">6th AUGUST, 2026</span>
               <span className="text-[9px] font-sans text-stone-400 uppercase tracking-widest mt-1">Kodur, Malappuram</span>
               <div className="h-[1px] w-8 bg-gold-500/30 my-1.5" />
               <span className="text-[9px] font-mono tracking-widest text-[#b33951] uppercase flex items-center gap-1">
                 <Sparkles className="h-2.5 w-2.5" /> Invitation Card Inside
               </span>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Envelope lower triangular folds / overlay */}
@@ -150,9 +216,19 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
             }}
             animate={isOpening ? { rotateX: 180, zIndex: 0, filter: 'brightness(0.6)' } : { rotateX: 0, zIndex: 10 }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="absolute top-0 left-0 right-0 h-1/2 bg-burgundy-700 border-b border-gold-500/20 shadow-md flex items-start justify-center pt-2 select-none"
+            className="absolute top-0 left-0 right-0 h-1/2 bg-burgundy-700 border-b border-gold-500/20 shadow-md flex items-start justify-center pt-2 select-none overflow-hidden group cursor-pointer"
           >
-            <div className="text-center opacity-40">
+            {/* Elegant gold/white light sweep reflection on hover */}
+            <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 via-gold-200/20 via-white/10 to-transparent -skew-x-25 -translate-x-[110%] transition-transform duration-1000 ease-out group-hover:translate-x-[110%] pointer-events-none" />
+
+            {/* Subtle premium sparkling stars that activate on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+              <Sparkles className="absolute top-2 left-[25%] h-3.5 w-3.5 text-gold-300/80 animate-pulse" style={{ animationDuration: '1.5s', animationDelay: '0.1s' }} />
+              <Sparkles className="absolute top-3 right-[25%] h-3 w-3 text-gold-200/90 animate-pulse" style={{ animationDuration: '1.8s', animationDelay: '0.4s' }} />
+              <Sparkles className="absolute top-5 left-[48%] h-2.5 w-2.5 text-white/75 animate-pulse" style={{ animationDuration: '1.2s', animationDelay: '0.7s' }} />
+            </div>
+
+            <div className="text-center opacity-40 transition-opacity group-hover:opacity-60 duration-300">
               <Mail className="h-5 w-5 text-gold-200" />
             </div>
           </motion.div>
