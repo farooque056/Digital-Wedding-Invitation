@@ -153,8 +153,9 @@ export default function Soundtrack({ autoPlayTrigger }: SoundtrackProps) {
         id="youtube-soundtrack-player" 
         style={{ 
           position: 'absolute', 
-          width: '1px', 
-          height: '1px', 
+          width: '0px', 
+          height: '0px', 
+          overflow: 'hidden',
           opacity: 0, 
           pointerEvents: 'none',
           bottom: 0,
