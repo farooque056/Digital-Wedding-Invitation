@@ -64,13 +64,20 @@ export default function Countdown() {
         {timeBlocks.map((block) => (
           <div
             key={block.label}
-            className="relative flex flex-col items-center justify-center bg-black/30 backdrop-blur-md p-3 sm:p-4 rounded-lg border border-gold-500/20 transition-all duration-300"
+            className="group relative flex flex-col items-center justify-center bg-stone-950/80 backdrop-blur-md p-3 sm:p-5 rounded-2xl border border-gold-400/40 shadow-[0_8px_32px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-gold-300 hover:scale-105 overflow-hidden"
           >
-            <div className="text-2xl sm:text-4xl font-serif font-semibold text-white tracking-tight leading-none">
+            {/* Elegant glowing top & bottom accents */}
+            <div className="absolute top-0 inset-x-3 h-[1px] bg-gradient-to-r from-transparent via-gold-300/80 to-transparent" />
+            <div className="absolute bottom-0 inset-x-3 h-[1px] bg-gradient-to-r from-transparent via-gold-400/30 to-transparent" />
+            
+            {/* Subtle background radial glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold-500/10 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+
+            <div className="text-2xl sm:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-gold-100 to-gold-300 tracking-tight leading-none drop-shadow-[0_2px_10px_rgba(235,216,170,0.3)] relative z-10">
               {String(block.value).padStart(2, '0')}
             </div>
             
-            <div className="text-[9px] sm:text-[11px] font-sans uppercase tracking-[0.2em] text-gold-400/80 font-medium mt-1.5">
+            <div className="text-[9px] sm:text-[11px] font-sans uppercase tracking-[0.25em] text-gold-400/90 font-medium mt-2 relative z-10">
               {block.label}
             </div>
           </div>

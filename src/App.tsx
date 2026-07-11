@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, Volume2, VolumeX } from 'lucide-react';
+import { Heart, Calendar, Sparkles } from 'lucide-react';
 import Envelope from './components/Envelope';
+import Soundtrack from './components/Soundtrack';
 import Countdown from './components/Countdown';
 import Couple from './components/Couple';
 import Venue from './components/Venue';
@@ -10,93 +11,26 @@ import AcceptCard from './components/AcceptCard';
 export default function App() {
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
   const [petals, setPetals] = useState<{ id: number; left: string; delay: string; duration: string; size: string }[]>([]);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isMusicStarted, setIsMusicStarted] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Generate falling rose petals on load
   useEffect(() => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const length = isMobile ? 6 : 18;
-    const generatedPetals = Array.from({ length }).map((_, i) => ({
+    const generatedPetals = Array.from({ length: 18 }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 8}s`,
-      duration: isMobile ? `${6 + Math.random() * 8}s` : `${8 + Math.random() * 12}s`,
-      size: isMobile ? `${6 + Math.random() * 8}px` : `${8 + Math.random() * 12}px`,
+      delay: `${Math.random() * 10}s`,
+      duration: `${8 + Math.random() * 12}s`,
+      size: `${8 + Math.random() * 12}px`,
     }));
     setPetals(generatedPetals);
   }, []);
 
-  // Set default audio volume on mount
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.15; // Soft, comfortable ambient background volume
-    }
-  }, []);
-
-  const handleSealClick = () => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.15; // Soft, comfortable ambient background volume
-      audioRef.current.play()
-        .then(() => {
-          setIsMusicStarted(true);
-        })
-        .catch((err) => {
-          console.warn("Audio playback failed or was blocked by browser autoplay policy:", err);
-          // Set music started anyway to show the control button so user can click to unmute/play
-          setIsMusicStarted(true);
-        });
-    }
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      const newMuted = !isMuted;
-      audioRef.current.muted = newMuted;
-      setIsMuted(newMuted);
-      
-      // If paused due to browser policy, play it when they interact with the mute button
-      if (audioRef.current.paused) {
-        audioRef.current.play().catch(e => console.warn(e));
-      }
-    }
-  };
-
   return (
     <div className="min-h-screen bg-pattern-wedding text-stone-800 font-sans relative overflow-x-hidden" id="wedding-app-root">
       
-      {/* Background Audio Player */}
-      <audio
-        ref={audioRef}
-        src="/api/bgm.mp3"
-        loop
-        preload="auto"
-      />
-
-      {/* Floating Ambient Music Control (Volume Toggle) */}
-      {isMusicStarted && (
-        <button
-          id="music-mute-toggle-fixed"
-          onClick={toggleMute}
-          className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-11 h-11 rounded-full bg-stone-950/90 border border-gold-500/30 text-gold-300 hover:text-gold-100 hover:border-gold-400/60 shadow-[0_4px_20px_rgba(212,175,55,0.25)] hover:shadow-[0_4px_25px_rgba(212,175,55,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
-          title={isMuted ? "Unmute Background Music" : "Mute Background Music"}
-        >
-          {isMuted ? (
-            <VolumeX className="w-5 h-5 text-stone-400 animate-pulse" />
-          ) : (
-            <Volume2 className="w-5 h-5 text-gold-400" />
-          )}
-        </button>
-      )}
-
       {/* 1. Envelope Gatekeeper */}
       <AnimatePresence mode="wait">
         {!isEnvelopeOpen && (
-          <Envelope 
-            onOpen={() => setIsEnvelopeOpen(true)} 
-            onSealClick={handleSealClick}
-          />
+          <Envelope onOpen={() => setIsEnvelopeOpen(true)} />
         )}
       </AnimatePresence>
 
@@ -114,6 +48,9 @@ export default function App() {
             <div className="absolute bottom-1/3 right-10 w-96 h-96 bg-rose-900/15 rounded-full filter blur-[140px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
             <div className="absolute top-2/3 left-1/3 w-[30rem] h-[30rem] bg-gold-400/5 rounded-full filter blur-[150px]" />
           </div>
+
+          {/* Floating Sound Controller */}
+          <Soundtrack autoPlayTrigger={isEnvelopeOpen} />
 
           {/* Falling Organic Rose Petals */}
           <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden" id="rose-petals-layer">
@@ -146,12 +83,12 @@ export default function App() {
 
           {/* 3. Hero Section */}
           <section id="hero" className="min-h-[85vh] flex flex-col justify-center items-center py-20 px-4 relative select-none overflow-hidden">
-            {/* Background Video Layer (Hidden on mobile to maximize phone rendering speed and scroll responsiveness) */}
-            <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-40 mix-blend-lighten hidden md:block">
+            {/* Background Video Layer */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-40 mix-blend-lighten">
               <iframe
                 loading="lazy"
                 title="Gumlet video player"
-                src="https://play.gumlet.io/embed/6a4e8f701c338f62ccc2d5d0?background=true&autoplay=true&loop=true&disable_player_controls=true"
+                src="https://play.gumlet.io/embed/6a2a293ee9db499e93efe325?background=true&autoplay=true&loop=true&disable_player_controls=true"
                 className="absolute top-1/2 left-1/2 w-[177.78vh] min-w-full h-full min-h-[56.25vw] -translate-x-1/2 -translate-y-1/2 scale-105 border-0"
                 referrerPolicy="origin"
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"

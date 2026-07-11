@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Heart } from 'lucide-react';
 
 export default function Couple() {
-  const [imgSrc, setImgSrc] = useState('https://i.ibb.co/DH0NcB8c/dfffffs-1.jpg');
+  const [imgSrc, setImgSrc] = useState('https://i.ibb.co/WN1JpSRn/add001.jpg');
   const fallbacks = [
-    'https://i.ibb.co/jPnd0CW0/dfffffs-1.jpg'
+    'https://i.ibb.co/Q7Gwjsx9/add001.jpg',
+    'https://i.ibb.co/mr7WFQPJ/add001.jpg'
   ];
   const [fallbackIdx, setFallbackIdx] = useState(0);
 
